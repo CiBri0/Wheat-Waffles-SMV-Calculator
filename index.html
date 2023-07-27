@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheat Waffles SMV Calculator</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            display: flex;
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            color: white;
+        }
+
+        section {
+            margin: auto;
+            width: 75%;
+            height: 75%;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #1e293b;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #b91c1c;
+        }
+
+        .grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 0px 0px;
+            grid-template-areas:
+                "1 2"
+                "3 4"
+                "5 6";
+            grid-gap: 10px;
+        }
+
+        .slot {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-right: 20px;
+            padding-left: 20px;
+            border-radius: 10px;
+            background: #334155;
+            display: flex;
+            height: 50px;
+        }
+
+        input {
+            all: unset;
+            width: 100%;
+            height: 100%;
+            background: #475569;
+            padding-right: 10px;
+            padding-left: 10px;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        .b {
+            all: unset;
+            height: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 10px;
+            background: #adff2f;
+            transition: all;
+            float: right;
+        }
+
+        .b:hover {
+            opacity: 50%;
+        }
+
+        ::placeholder {
+            color: white;
+            opacity: 0.75;
+        }
+
+        .post {
+            all: unset;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            padding-right: 45px;
+            padding-left: 45px;
+            border-radius: 10px;
+            background: #334155;
+            font-size: x-large;
+            margin: auto;
+            transition: all;
+        }
+
+        .post:hover {
+            background: #64748b;
+        }
+
+        .post:active {
+            transform: translateY(5px);
+            background: #64748b;
+            transition: all;
+        }
+
+    </style>
+</head>
+<body>
+    <section>
+        <h1>Wheat Waffles SMV Calculator</h1>
+
+        <div class="grid">
+            <div class="slot">
+                <input type="text" placeholder="Face / 8" id="f">
+                <button class="b" id="1" onclick="activate(1)"></button>
+            </div>
+
+            <div class="slot">
+                <input type="text" placeholder="Height in CM (1 in = 2.54 cm)" id="h">
+                <button class="b" id="2" onclick="activate(2)"></button>
+            </div>
+
+            <div class="slot">
+                <input type="text" placeholder="Body / 8" id="b">
+                <button class="b" id="3" onclick="activate(3)"></button>
+            </div>
+
+            <div class="slot">
+                <input type="text" placeholder="Money / 8" id="m">
+                <button class="b" id="4" onclick="activate(4)"></button>
+            </div>
+
+            <div class="slot">
+                <input type="text" placeholder="P size / 8" id="p">
+                <button class="b" id="5" onclick="activate(5)"></button>
+            </div>
+
+            <div class="slot">
+                <input type="text" placeholder="IQ / 8" id="iq">
+                <button class="b" id="6" onclick="activate(6)"></button>
+            </div>
+        </div>
+
+        <div style="display: flex;"><button class="post" onclick="calculate()">Calculate</button></div>
+
+        <h3 id="calc"></h3>
+        <h2 id="score"></h2>
+
+
+
+        <script>
+            let active = [true,true,true,true,true,true]
+            let weight = [5,3,2,2,2,1]
+
+            function calculate() {
+                n = [parseFloat(document.getElementById("f").value),
+                     parseFloat(document.getElementById("h").value),
+                     parseFloat(document.getElementById("b").value),
+                     parseFloat(document.getElementById("m").value),
+                     parseFloat(document.getElementById("p").value),
+                     parseFloat(document.getElementById("iq").value)]
+
+                if (!validate(n)) { // Cancel if a field is empty
+                    alert("You have not filled in all the fields !")
+                    return
+                }
+
+                for (let i = 0; i < n.length; i++) { // Cancel if a field is hover 8
+                    if (n[i] > 8 && i != 1) {
+                        alert("You have a field over 8 !")
+                        return
+                    }
+                }
+
+                // Convert heigth
+
+                n[1] = ((n[1] - 157) / 5.5) + 1
+
+                if (n[1] > 8) {
+                    n[1] = 8
+                }
+
+                if (n[1] < 1) {
+                    n[1] = 1
+                }
+
+
+                // Get the diviser and do the math
+
+                diviser = 0
+                total = 1
+
+                for (let i = 0; i < active.length; i++) {
+                    if (active[i]) {
+                        diviser = diviser + weight[i]
+                        total = total * (n[i] ** weight[i])
+                    }
+                }
+
+                total = Math.round((total ** (1 / diviser)) * 10) / 10
+                score = toNumberString(total / 8 * 10) + " / 10"
+                document.getElementById("score").innerHTML = score
+
+            }
+
+            function validate(inputs) {
+                for (let i = 0; i < inputs.length; i++) {
+                    if (isNaN(inputs[i])) {
+                        return false;
+                    }
+                }
+                return true
+            }
+
+            function toNumberString(num) {
+                if (Number.isInteger(num)) {
+                    return num + ".0"
+                } else {
+                    return num.toString();
+                }
+            }
+
+            function activate(i) {
+                active[i-1] = !active[i-1]
+                if (active[i-1]) {
+                    document.getElementById(i).style.backgroundColor = "#adff2f"
+                    return
+                }
+                document.getElementById(i).style.backgroundColor = "#b91c1c"
+            }
+
+        </script>
+    </section>
+</body>
+</html>
