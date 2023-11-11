@@ -200,16 +200,18 @@
 
                 diviser = 0
                 total = 1
+                act = 0
 
                 for (let i = 0; i < active.length; i++) {
                     if (active[i]) {
                         diviser = diviser + weight[i]
                         total = total * (n[i] ** weight[i])
+                        act = act + 1
                     }
                 }
 
                 total = Math.round((total ** (1 / diviser)) * 10) / 10
-                score = toNumberString(total / diviser * 10) + " / 10"
+                score = toNumberString(total / act * 10) + " / 10"
                 document.getElementById("score").innerHTML = score
 
             }
