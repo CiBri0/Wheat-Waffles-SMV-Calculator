@@ -209,7 +209,7 @@
                 }
 
                 total = Math.round((total ** (1 / diviser)) * 10) / 10
-                score = toNumberString(total / 8 * 10) + " / 10"
+                score = toNumberString(total / diviser * 10) + " / 10"
                 document.getElementById("score").innerHTML = score
 
             }
